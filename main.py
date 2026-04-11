@@ -24,7 +24,7 @@ from database import init_db
 from onboarding import run_onboarding
 from scheduler import create_scheduler
 
-TOKEN_FILE = "token.json"
+TOKEN_FILE = "/etc/secrets/token.json" if os.path.exists("/etc/secrets/token.json") else "token.json"
 
 # Exposed so web/preferences.py can reschedule after new user activates
 scheduler_instance = None
