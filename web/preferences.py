@@ -57,6 +57,10 @@ TIMEZONES = [
 ]
 
 
+@app.route("/")
+def index():
+    return "Niche Inbox is running.", 200
+
 @app.route("/setup")
 def setup():
     token = request.args.get("token", "")
