@@ -82,7 +82,16 @@ def _ensure_gmail_auth():
 def main():
     global scheduler_instance
 
-    # 1. Ensure Gmail OAuth2 is authorised BEFORE anything tries to send email
+    # 1. Fallback: If Render user pasted JSON directly into env vars, write them out
+    if os.getenv("CREDENTIALS_JSON") and not os.path.exists("credentials.json"):
+        with open("credentials.json", "w") as f:
+            f.write(os.getenv("CREDENTIALS_JSON"))
+    
+    if os.getenv("TOKEN_JSON") and not os.path.exists("token.json"):
+        with open("token.json", "w") as f:
+            f.write(os.getenv("TOKEN_JSON"))
+
+    # 2. Ensure Gmail OAuth2 is authorised BEFORE anything tries to send email
     _ensure_gmail_auth()
 
     # 2. Initialise database
