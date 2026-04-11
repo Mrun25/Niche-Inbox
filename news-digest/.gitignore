@@ -1,0 +1,7 @@
+.env
+config/user_profile.json
+__pycache__/
+*.pyc
+.DS_Store
+token.json
+credentials.json

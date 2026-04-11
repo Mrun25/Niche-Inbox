@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Niche Inbox — You're All Set</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink: #1a1208; --paper: #fffdf7; --cream: #f2ede3;
+      --rule: #c8b89a; --muted: #7a6a4a; --accent: #5c4a2a;
+    }
+    body {
+      background: var(--cream);
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(200,184,154,0.18) 27px, rgba(200,184,154,0.18) 28px);
+      font-family: 'EB Garamond', Georgia, serif;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+    .page {
+      max-width: 580px;
+      width: 100%;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-top: 6px solid var(--ink);
+      box-shadow: 4px 4px 0 rgba(26,18,8,0.08);
+      text-align: center;
+    }
+    .masthead {
+      padding: 28px 48px 22px;
+      border-bottom: 3px double var(--ink);
+    }
+    .blackletter {
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 48px;
+      line-height: 1;
+    }
+    .edition-line {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      margin-top: 10px; font-size: 11px; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .edition-line span.rule { flex: 1; height: 1px; background: var(--rule); }
+
+    .body { padding: 44px 52px; }
+
+    .check-mark {
+      width: 64px; height: 64px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      font-size: 28px;
+    }
+    .headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .body-text {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .detail-box {
+      border: 1px solid var(--rule);
+      padding: 16px 24px;
+      font-size: 15px;
+      line-height: 1.7;
+      margin: 24px 0;
+      background: var(--cream);
+    }
+    .detail-box strong { font-weight: 600; }
+
+    .footer {
+      border-top: 1px solid var(--rule);
+      padding: 14px 48px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media (max-width: 480px) {
+      .masthead, .body, .footer { padding-left: 24px; padding-right: 24px; }
+      .blackletter { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="blackletter">Niche Inbox</div>
+      <div class="edition-line">
+        <span class="rule"></span>
+        <span>Subscription Confirmed</span>
+        <span class="rule"></span>
+      </div>
+    </header>
+
+    <div class="body">
+      <div class="check-mark">✓</div>
+
+      {% if already_done %}
+        <div class="headline">Already Subscribed</div>
+        <p class="body-text">
+          Your preferences have already been saved. Your Niche Inbox is on its way each day.
+        </p>
+      {% else %}
+        <div class="headline">Welcome to Niche Inbox</div>
+        <p class="body-text">
+          Your subscription has been confirmed. Your first edition is being prepared and
+          will arrive in your inbox shortly.
+        </p>
+
+        {% if delivery_time %}
+        <div class="detail-box">
+          From tomorrow, your digest will be delivered daily at
+          <strong>{{ delivery_time }}</strong> — <strong>{{ timezone }}</strong>.
+        </div>
+        {% endif %}
+
+        <p class="body-text" style="font-style:italic; font-size:15px;">
+          You may now close this window. Good reading, dear reader.
+        </p>
+      {% endif %}
+    </div>
+
+    <footer class="footer">
+      Niche Inbox &nbsp;·&nbsp; Personalised News, Delivered Daily
+    </footer>
+  </div>
+</body>
+</html>
