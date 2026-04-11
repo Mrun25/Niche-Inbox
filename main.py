@@ -13,9 +13,9 @@ import threading
 
 # Force UTF-8 output so Unicode characters print correctly on Windows
 if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8", line_buffering=True)
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -135,4 +135,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        import traceback
+        print("====== FATAL CRASH IN MAIN.PY ======", flush=True)
+        traceback.print_exc()
+        print("====================================", flush=True)
+        sys.exit(1)
