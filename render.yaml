@@ -21,3 +21,13 @@ services:
         sync: false
       - key: SECRET_KEY
         sync: false
+      # Paste the raw JSON content of credentials.json here
+      - key: CREDENTIALS_JSON
+        sync: false
+      # Paste the raw JSON content of token.json here
+      - key: TOKEN_JSON
+        sync: false
+      # Paste the base64 output from GET /db-backup?key=<SECRET_KEY> here
+      # to restore user data across Render restarts
+      - key: DB_BACKUP
+        sync: false

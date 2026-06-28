@@ -61,6 +61,36 @@ TIMEZONES = [
 def index():
     return "Niche Inbox is running.", 200
 
+
+@app.route("/ping")
+def ping():
+    """Health check endpoint. Used by the self-ping watchdog and external
+    uptime monitors (e.g. UptimeRobot, cron-job.org) to keep Render awake."""
+    return "pong", 200
+
+
+@app.route("/db-backup")
+def db_backup():
+    """Returns the current digest.db as a base64 string.
+    Protected by SECRET_KEY. Use this to update the DB_BACKUP env var on Render
+    so user data survives the next restart.
+
+    Usage: GET /db-backup?key=<SECRET_KEY>
+    Copy the output and paste it into the DB_BACKUP environment variable on Render.
+    """
+    import base64
+    provided_key = request.args.get("key", "")
+    secret_key = os.getenv("SECRET_KEY", "")
+    if not secret_key or provided_key != secret_key:
+        return "Unauthorized", 401
+    try:
+        with open("digest.db", "rb") as f:
+            db_bytes = f.read()
+        b64 = base64.b64encode(db_bytes).decode("utf-8")
+        return b64, 200, {"Content-Type": "text/plain"}
+    except FileNotFoundError:
+        return "digest.db not found", 404
+
 @app.route("/setup")
 def setup():
     token = request.args.get("token", "")

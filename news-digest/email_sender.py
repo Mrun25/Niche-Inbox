@@ -49,7 +49,18 @@ def _get_gmail_service():
     # Refresh or re-authenticate if needed
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"[email_sender] Token refresh failed: {e}. Re-authenticating...")
+                if not os.path.exists(CREDS_PATH):
+                    raise FileNotFoundError(
+                        f"credentials.json not found at {CREDS_PATH}.\n"
+                        "Download it from: console.cloud.google.com → "
+                        "APIs & Services → Credentials → OAuth 2.0 Client IDs"
+                    )
+                flow = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES)
+                creds = flow.run_local_server(port=0)
         else:
             if not os.path.exists(CREDS_PATH):
                 raise FileNotFoundError(

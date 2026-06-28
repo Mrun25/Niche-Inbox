@@ -54,17 +54,45 @@ def schedule_all_users(scheduler: BackgroundScheduler):
             print(f"[scheduler] Invalid delivery_time for {email}: {delivery_time}")
             continue
 
-        scheduler.add_job(
-            deliver_digest,
-            trigger=CronTrigger(hour=hour, minute=minute, timezone=timezone),
-            id=f"digest_{email}",
-            args=[email, topics],
-            replace_existing=True,
-        )
-        print(f"[scheduler] Scheduled {email} at {delivery_time} {timezone}")
+        try:
+            scheduler.add_job(
+                deliver_digest,
+                trigger=CronTrigger(hour=hour, minute=minute, timezone=timezone),
+                id=f"digest_{email}",
+                args=[email, topics],
+                replace_existing=True,
+            )
+            print(f"[scheduler] Scheduled {email} at {delivery_time} {timezone}")
+        except Exception as e:
+            print(f"[scheduler] FAILED to schedule {email}: {e}")
+
+
+def _watchdog_reschedule():
+    """Heartbeat job: re-registers all user digest jobs every 30 minutes.
+    Ensures scheduled digests survive if the scheduler loses its job list
+    after a Render sleep/wake cycle."""
+    from apscheduler.schedulers.background import BackgroundScheduler
+    # We need the live scheduler instance from main.py
+    import main as _main
+    sched = getattr(_main, "scheduler_instance", None)
+    if sched and sched.running:
+        print("[scheduler] Watchdog: re-running schedule_all_users...")
+        schedule_all_users(sched)
+    else:
+        print("[scheduler] Watchdog: scheduler not running, skipping.")
 
 
 def create_scheduler() -> BackgroundScheduler:
     scheduler = BackgroundScheduler()
     schedule_all_users(scheduler)
+
+    # Watchdog: re-schedule all users every 30 minutes to survive restarts
+    scheduler.add_job(
+        _watchdog_reschedule,
+        trigger=CronTrigger(minute="*/30"),
+        id="watchdog_reschedule",
+        replace_existing=True,
+    )
+    print("[scheduler] Watchdog heartbeat job registered (every 30 min).")
+
     return scheduler

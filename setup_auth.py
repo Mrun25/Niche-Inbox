@@ -43,8 +43,13 @@ def setup_auth() -> bool:
 
     if creds and creds.expired and creds.refresh_token:
         print("[auth] Refreshing expired token...")
-        creds.refresh(Request())
-    else:
+        try:
+            creds.refresh(Request())
+        except Exception as e:
+            print(f"[auth] Refresh failed: {e}. Re-authenticating...")
+            creds = None
+
+    if not creds or not creds.valid:
         print("[auth] Opening browser for Google OAuth2 login...")
         print("[auth] Sign in with your.niche.inbox@gmail.com and click Allow.")
         flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
