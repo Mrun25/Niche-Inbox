@@ -4,7 +4,9 @@
   <p><strong>A personalised daily news digest emailer.</strong></p>
 </div>
 
-![Product Demo](niche-inbox-img.jpg)
+<div align="center">
+  <img src="niche-inbox-img.jpg" alt="Product Demo" width="600"/>
+</div>
 
 Add a friend's email to the source code, and they receive a one-time setup link to pick their topics and delivery time. From that moment on, they get a beautifully formatted newspaper-style digest every single day.
 
