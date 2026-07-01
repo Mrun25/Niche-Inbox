@@ -12,11 +12,11 @@ import traceback
 import threading
 from flask import Flask, request, render_template, abort
 
-from database import get_user_by_token, activate_user
-from news_fetcher import fetch_articles
-from summarizer import build_newsletter
-from email_sender import send_email
-from scheduler import schedule_all_users
+from src.core.database import get_user_by_token, activate_user
+from src.core.news_fetcher import fetch_articles
+from src.core.summarizer import build_newsletter
+from src.core.email_sender import send_email
+from src.core.scheduler import schedule_all_users
 
 app = Flask(__name__, template_folder="../templates")
 app.secret_key = os.getenv("SECRET_KEY", "changeme-in-production")
@@ -127,7 +127,7 @@ def submit():
     print(f"[web] User activated: {user['email']} | topics: {topics} | time: {delivery_time} {timezone}")
 
     # Re-schedule all users so this user's job is added to the scheduler
-    from main import scheduler_instance
+    from src.main import scheduler_instance
     if scheduler_instance:
         schedule_all_users(scheduler_instance)
 

@@ -8,10 +8,10 @@ from datetime import date
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from database import get_all_active_users
-from news_fetcher import fetch_articles
-from summarizer import build_newsletter
-from email_sender import send_email
+from src.core.database import get_all_active_users
+from src.core.news_fetcher import fetch_articles
+from src.core.summarizer import build_newsletter
+from src.core.email_sender import send_email
 
 logging.getLogger("apscheduler").setLevel(logging.WARNING)
 
@@ -72,8 +72,7 @@ def _watchdog_reschedule():
     Ensures scheduled digests survive if the scheduler loses its job list
     after a Render sleep/wake cycle."""
     from apscheduler.schedulers.background import BackgroundScheduler
-    # We need the live scheduler instance from main.py
-    import main as _main
+    import src.main as _main
     sched = getattr(_main, "scheduler_instance", None)
     if sched and sched.running:
         print("[scheduler] Watchdog: re-running schedule_all_users...")

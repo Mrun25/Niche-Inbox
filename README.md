@@ -1,12 +1,18 @@
-# 📰 Niche Inbox
+<div align="center">
+  <img src="niche-inbox-logo.svg" alt="Niche Inbox Logo" width="200"/>
+  <h1>Niche Inbox</h1>
+  <p><strong>A personalised daily news digest emailer.</strong></p>
+</div>
 
-A personalised daily news digest emailer. Add a friend's email to the source code, and they receive a one-time setup link to pick their topics and delivery time. From that moment on, they get a beautifully formatted newspaper-style digest every single day.
+![Product Demo](niche-inbox-img.jpg)
+
+Add a friend's email to the source code, and they receive a one-time setup link to pick their topics and delivery time. From that moment on, they get a beautifully formatted newspaper-style digest every single day.
 
 ---
 
-## How It Works
+## 🚀 How It Works
 
-1. **You add** a friend's email to `admin.py`
+1. **You add** a friend's email to `src/scripts/admin.py`
 2. **App sends** them a stylish onboarding email with a unique setup link
 3. **Friend opens** the link → fills an MCQ-style form (topics + delivery time)
 4. **Immediately** after submitting — they receive today's digest right away
@@ -14,23 +20,33 @@ A personalised daily news digest emailer. Add a friend's email to the source cod
 
 ---
 
-## File Structure
+## 📂 File Structure
 
 ```
 news-digest/
-├── main.py              # Entry point — starts Flask + scheduler
-├── admin.py             # Add/remove recipient emails here
-├── onboarding.py        # Sends setup emails to new users
-├── news_fetcher.py      # Fetches live news from NewsAPI
-├── summarizer.py        # Summarises articles via Mistral API
-├── email_sender.py      # Gmail OAuth2 sending
-├── scheduler.py         # APScheduler — per-user cron jobs
-├── database.py          # SQLite — user preferences storage
-├── web/
-│   └── preferences.py   # Flask routes (preference form + submission)
-├── templates/
-│   ├── preferences.html # MCQ preference form (newspaper style)
-│   └── success.html     # Confirmation page after submission
+├── src/
+│   ├── main.py              # Entry point — starts Flask + scheduler
+│   ├── core/
+│   │   ├── news_fetcher.py  # Fetches live news from NewsAPI
+│   │   ├── summarizer.py    # Summarises articles via Mistral API
+│   │   ├── email_sender.py  # Gmail OAuth2 sending
+│   │   ├── scheduler.py     # APScheduler — per-user cron jobs
+│   │   └── database.py      # SQLite — user preferences storage
+│   ├── api/
+│   │   └── preferences.py   # Flask routes (preference form + submission)
+│   ├── scripts/
+│   │   ├── admin.py         # Add/remove recipient emails here
+│   │   ├── onboarding.py    # Sends setup emails to new users
+│   │   ├── setup_auth.py    # Google OAuth token setup
+│   │   ├── check_auth.py    # Verify OAuth tokens
+│   │   ├── force_send.py    # Trigger digests manually
+│   │   └── resend_mail.py   # Resend onboarding emails
+│   └── templates/
+│       ├── preferences.html # MCQ preference form (newspaper style)
+│       └── success.html     # Confirmation page after submission
+├── docs/
+│   └── architecture.md      # Detailed system architecture & flow diagrams
+├── digest.db                # SQLite database (generated automatically)
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -38,7 +54,7 @@ news-digest/
 
 ---
 
-## Setup Instructions
+## ⚙️ Setup Instructions
 
 ### 1. Clone & Install
 
@@ -85,7 +101,7 @@ Edit `.env` and fill in your API keys (see below for how to get each one).
 
 ### 4. Add Recipients
 
-Open `admin.py` and add your friends' email addresses:
+Open `src/scripts/admin.py` and add your friends' email addresses:
 
 ```python
 RECIPIENTS = [
@@ -97,7 +113,7 @@ RECIPIENTS = [
 ### 5. Run the App
 
 ```bash
-python main.py
+python -m src.main
 ```
 
 On startup the app will:
@@ -108,7 +124,7 @@ On startup the app will:
 
 ---
 
-## The Onboarding Flow (for your friends)
+## 👥 The Onboarding Flow (for your friends)
 
 1. They receive an email from you titled **"You're Invited — Set Up Your Niche Inbox"**
 2. They click the **Set Your Preferences** button
@@ -122,7 +138,7 @@ On startup the app will:
 
 ---
 
-## Deploying for 24/7 Running
+## ☁️ Deploying for 24/7 Running
 
 ### Railway (Recommended)
 
@@ -140,15 +156,15 @@ On startup the app will:
 1. Push code to GitHub
 2. Go to [https://render.com](https://render.com) and sign up
 3. Click **New → Web Service** → connect your repo
-4. Set **Start Command** to: `python main.py`
+4. Set **Start Command** to: `python -m src.main`
 5. Add environment variables in the **Environment** tab
 6. Deploy!
 
-> ⚠️ For cloud deployment, you'll need to run `python main.py` locally first to generate `token.json`, then upload it to your server or use a secrets manager.
+> ⚠️ For cloud deployment, you'll need to run `python -m src.main` locally first to generate `token.json`, then upload it to your server or use a secrets manager.
 
 ---
 
-## Topics Available
+## 📑 Topics Available
 
 | Topic | Coverage |
 |-------|----------|
@@ -163,7 +179,7 @@ On startup the app will:
 
 ---
 
-## Notes
+## 📝 Notes
 
 - `credentials.json` and `token.json` are in `.gitignore` — never commit them
 - The SQLite database (`digest.db`) is created automatically on first run

@@ -3,9 +3,9 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dotenv import load_dotenv
 load_dotenv()
-from database import init_db, get_user_by_email, add_pending_user
-from onboarding import send_onboarding_email
-from scheduler import deliver_digest
+from src.core.database import init_db, get_user_by_email, add_pending_user
+from src.scripts.onboarding import send_onboarding_email
+from src.core.scheduler import deliver_digest
 import json
 
 def main():

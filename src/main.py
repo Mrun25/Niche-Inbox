@@ -23,9 +23,9 @@ if hasattr(sys.stderr, "reconfigure"):
 from dotenv import load_dotenv
 load_dotenv()
 
-from database import init_db
-from onboarding import run_onboarding
-from scheduler import create_scheduler
+from src.core.database import init_db
+from src.scripts.onboarding import run_onboarding
+from src.core.scheduler import create_scheduler
 
 TOKEN_FILE = "/etc/secrets/token.json" if os.path.exists("/etc/secrets/token.json") else "token.json"
 
@@ -50,7 +50,7 @@ def _wait_for_flask(port: int = 5000, timeout: int = 15) -> bool:
 
 def _ensure_gmail_auth():
     """Check token.json exists and is valid; if not, run the OAuth2 browser flow."""
-    from setup_auth import setup_auth
+    from src.scripts.setup_auth import setup_auth
 
     if not os.path.exists(TOKEN_FILE):
         print("[main] token.json not found — launching Gmail OAuth2 setup...")
@@ -76,13 +76,13 @@ def _ensure_gmail_auth():
                     print(f"[main] Gmail token refresh failed: {e}. Re-running OAuth2 setup...")
                     if os.path.exists(TOKEN_FILE):
                         os.remove(TOKEN_FILE)
-                    from setup_auth import setup_auth
+                    from src.scripts.setup_auth import setup_auth
                     setup_auth()
             else:
                 print("[main] Gmail token invalid — re-running OAuth2 setup...")
                 if os.path.exists(TOKEN_FILE):
                     os.remove(TOKEN_FILE)
-                from setup_auth import setup_auth
+                from src.scripts.setup_auth import setup_auth
                 setup_auth()
     print("[main] Gmail auth OK.")
 
@@ -162,7 +162,7 @@ def main():
     print("[main] Scheduler started.")
 
     # 6. Start Flask in a background thread so it doesn't block onboarding
-    from web.preferences import app
+    from src.api.preferences import app
     port = int(os.getenv("PORT", 5000))
 
     flask_thread = threading.Thread(

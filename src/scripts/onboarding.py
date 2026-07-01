@@ -4,9 +4,9 @@ with a link to the preference form.
 """
 
 import os
-from admin import RECIPIENTS
-from database import add_pending_user, get_user_by_email
-from email_sender import send_email
+from src.scripts.admin import RECIPIENTS
+from src.core.database import add_pending_user, get_user_by_email
+from src.core.email_sender import send_email
 
 
 def send_onboarding_email(email: str, token: str):

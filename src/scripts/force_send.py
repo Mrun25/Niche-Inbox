@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import json
-from database import get_all_active_users
-from scheduler import deliver_digest
+from src.core.database import get_all_active_users
+from src.core.scheduler import deliver_digest
 
 def trigger_all():
     users = get_all_active_users()
