@@ -61,7 +61,7 @@ news-digest/
 ### 1. Clone & Install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Mrun25/Niche-Inbox
 cd news-digest
 python -m venv venv
 source venv/bin/activate       # Windows: venv\Scripts\activate
