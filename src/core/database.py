@@ -66,12 +66,14 @@ def get_all_active_users():
         return [dict(r) for r in rows]
 
 
-def activate_user(token: str, topics: list, delivery_time: str, timezone: str):
+def activate_user(token: str, topics: list, delivery_time: str, timezone: str) -> bool:
+    """Atomically consume a pending invitation; return whether it was activated."""
     with get_connection() as conn:
-        conn.execute(
+        result = conn.execute(
             """UPDATE users
                SET status = 'active', topics = ?, delivery_time = ?, timezone = ?
-               WHERE token = ?""",
+               WHERE token = ? AND status = 'pending'""",
             (json.dumps(topics), delivery_time, timezone, token),
         )
         conn.commit()
+        return result.rowcount == 1
