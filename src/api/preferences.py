@@ -109,6 +109,9 @@ def submit():
     if not user:
         abort(404)
 
+    if user["status"] == "active":
+        return render_template("success.html", already_done=True)
+
     topics = request.form.getlist("topics")
     delivery_time = request.form.get("delivery_time", "08:00")
     timezone = request.form.get("timezone", "UTC")
@@ -123,7 +126,9 @@ def submit():
         )
 
     # Save to DB and activate — commit is fully complete before we spawn the thread
-    activate_user(token, topics, delivery_time, timezone)
+    if not activate_user(token, topics, delivery_time, timezone):
+        # Another submission may have consumed the same invitation meanwhile.
+        return render_template("success.html", already_done=True)
     print(f"[web] User activated: {user['email']} | topics: {topics} | time: {delivery_time} {timezone}")
 
     # Re-schedule all users so this user's job is added to the scheduler
